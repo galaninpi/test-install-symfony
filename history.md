@@ -43,3 +43,50 @@
     ```cmd
     symfony new --webapp my_project
     ```
+
+## Запускаем проект
+
+1. Переходим в папку с проектом `D:/path-to-folder/git/src/my_project`
+    ```cmd
+    cd src
+    cd my_project
+    ```
+1. Запускаем проект
+    ```cmd
+    symfony server:start
+    ```
+
+1. Проверяем в браузере http://127.0.0.1:8000/
+
+## Проверка bin/console
+
+1. Переходим в папку с проектом `D:/path-to-folder/git/src/my_project`
+    ```bash
+    cd src
+    cd my_project
+    ```
+
+1. Запускаем проект
+    ```bash
+    bin/console
+    bin/console --version
+    bin/console make:
+    ```
+
+## Создаем контролер
+
+1. Переходим в папку с проектом `D:/path-to-folder/git/src/my_project`
+    ```bash
+    cd src
+    cd my_project
+    ```
+
+1. Создаем контролер
+
+    ```bash
+    bin/console make:controller
+    ```
+
+1. Пишем имя `DefaultController`
+1. Создались файлы `my_project/src/Controller/DefaultController.php` и `my_project/templates/default/index.html.twig`
+1. Проверяем создание контролера в браузере http://127.0.0.1:8000/default
