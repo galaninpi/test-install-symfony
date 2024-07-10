@@ -90,3 +90,96 @@
 1. Пишем имя `DefaultController`
 1. Создались файлы `my_project/src/Controller/DefaultController.php` и `my_project/templates/default/index.html.twig`
 1. Проверяем создание контролера в браузере http://127.0.0.1:8000/default
+
+## Создаем подключение к базе данных
+
+1. Создаем файл `.env.local` `my_project/.env.local`
+1. Создаем переменную DATABASE_URL
+    ```
+    DATABASE_URL="mysql://app:!ChangeMe!@127.0.0.1:3306/app?serverVersion=8.0.38&charset=utf8mb4"
+    ```
+    где
+    - `mysql://app:` - имя пользователя `app`
+    - `mysql://app:!ChangeMe!@` - пароль `!ChangeMe!`
+    - `@127.0.0.1:3306/app?` - имя базы данных `app`
+    - `mysql://app:!ChangeMe!@127.0.0.1:3306/app?serverVersion=8.0.38&` - номер версии mysql
+
+    Нужно установить MySQL запустив mysql-installer-community-8.0.38.0.msi
+1. В php.ini нужно раскомментировать строчки
+    ```ini
+    extension=mysqli
+    extension=pdo_mysql
+    ```
+
+## Создаем пустой entity
+
+1. Создаем entity
+
+    ```bash
+    cd src
+    cd my_project
+    bin/console make:entity
+    ```
+1. Называем класс `Blog`
+1. UX Turbo не будем использовать `no`
+1. Создались файлы `my_project/src/Entity/Blog.php` и `my_project/src/Repository/BlogRepository.php`
+1. Создаем атрибуты.
+    - Вводим
+        - New property name: title
+        - Field type: string
+        - Field length: 255
+        - Can this field be null in the database (nullable) (yes/no): no
+
+        Обновился файл `my_project/src/Entity/Blog.php`
+
+        - Add another property? Enter the property name: text
+        - Field type: text
+        -  Can this field be null in the database (nullable) (yes/no): no
+
+## Создаем пустую миграцию
+
+1. Создаем пустую миграцию
+    ```bash
+    cd src
+    cd src/my_project
+    bin/console doctrine:migration:generate
+    ```
+1. Создался файл `src/my_project/migrations/Version<YYYY><MM><DD><hh><mm><ss>.php`
+
+## Создаем миграцию из Entity
+
+1. Сгенерируем миграцию, которая напишет SQL на основе анотаций из Entity
+    ```bash
+    cd src
+    cd src/my_project
+    bin/console doctrine:migration:diff
+    # yes
+    ```
+1. Создался файл `src/my_project/migrations/Version<YYYY><MM><DD><hh><mm><ss>.php`
+1. Запускаем миграцию
+    ```bash
+    cd src
+    cd src/my_project
+    bin/console doctrine:migration:migrate
+    # yes
+    ```
+1. Проверяем таблицу в БД через командную строку mysql
+    ```
+    mysql -u root -p
+    use gpi_symfony__my_project
+    show tables;
+    SELECT * FROM doctrine_migration_versions;
+    ```
+
+## Создание CRUD
+
+1. Создадим CRUD
+    ```bash
+    cd src
+    cd src/my_project
+    bin/console make:crud
+    ```
+
+    - The class name of the entity to create CRUD: Blog
+    - Choose a name for your controller class: BlogController
+    - Do you want to generate PHPUnit tests?: no
