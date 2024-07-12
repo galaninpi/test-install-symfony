@@ -183,3 +183,146 @@
     - The class name of the entity to create CRUD: Blog
     - Choose a name for your controller class: BlogController
     - Do you want to generate PHPUnit tests?: no
+
+## Авторизация
+
+```cmd
+composer require symfony/security-bundle
+```
+
+```bash
+cd src
+cd my_project
+bin/console make:user
+```
+
+The name of the security user class (e.g. User): User
+Do you want to store user data in the database (via Doctrine)? (yes/no): yes
+Enter a property name that will be the unique "display" name for the user (e.g. email, username, uuid): email
+Does this app need to hash/check user passwords? (yes/no): yes
+
+
+Создались файлы: my__project/src/Entity/User.php и my__project/src/Repositoty/UserRepository.php
+
+Обновился файл my_project/config/packages/security.yaml
+
+```bash
+cd src
+cd my_project
+bin/console make:migration
+```
+
+Создался файл my_project/migrations/Version<YYYY><MM><DD><hh><mm><ss>.php
+
+```
+cd src
+cd my_project
+bin/console doctrine:migrations:migrate
+```
+
+WARNING! You are about to execute a migration in database "gpi_symfony__my_project" that could result in schema changes and data loss. Are you sure you wish to continue?: yes
+
+```cmd
+composer require symfonycasts/verify-email-bundle
+composer require symfonycasts/verify-email-bundle
+```
+
+```bash
+cd src
+cd my_project
+bin/console make:registration-form
+```
+
+1. Нужно ли добавлять уникальный индекс?
+
+    Do you want to add a #[UniqueEntity] validation attribute to your User class to make sure duplicate accounts aren't created? (yes/no): yes
+
+1. Нужно ли отправлять email после регистрации
+
+    Do you want to send an email to verify the user's email address after registration? (yes/no): yes
+
+1. Хотим ли отправить ему ссылку
+
+    Would you like to include the user id in the verification link to allow anonymous email verification? (yes/no): no
+
+1. Какой будет использоваться обратный email для отправки
+
+    What email address will be used to send registration confirmations? (e.g. mailer@your-domain.com): mailer@your-domain.com
+
+1. Имя отправителя
+    What "name" should be associated with that email address? (e.g. Acme Mail Bot): Blog site
+
+1. Хотим ли мы сразу авторизоваться после регистрации?
+
+    Do you want to automatically authenticate the user after registration? (yes/no): yes
+
+1. Выбираем на какой роут сделать редирект
+    What route should the user be redirected to after registration?: 14
+    
+    `[14] app_blog_index`
+
+1. Do you want to generate PHPUnit tests? [Experimental] (yes/no): no
+
+1. Создадим форму входа
+
+```bash
+cd src
+cd my_project
+bin/console make:controller login
+```
+
+1. Создались файлы my_project/src/Controller/LoginController.php и my_project/templates\login/index.html.twig
+
+Листинг sequriyy.yaml
+
+```yaml
+security:
+    firewalls:
+        main:
+            form_login:
+                # "app_login" is the name of the route created previously
+                login_path: app_login
+                check_path: app_login
+                enable_csrf: true # Включить защиту формы
+```
+
+```yaml
+security:
+    access_control:
+        - { path: ^/admin, roles: ROLE_ADMIN }
+```
+
+```bash
+cd src
+cd my_project
+bin/console doctrine:migration:diff
+bin/console doctrine:migration:migrate
+```
+
+WARNING! You are about to execute a migration in database "gpi_symfony__my_project" that could result in schema changes and data loss. Are you sure you wish to continue? (yes/no): yes
+
+
+```conf
+MAILER_DSN=null://null
+```
+
+Листинг security.yaml
+
+```yaml
+security:
+    firewalls:
+        main:
+            logout:
+                path: /logout
+```
+
+Листинг security.yaml
+
+```yaml
+security:
+    role_hierarchy:
+        ROLE_ADMIN: ROLE_USER
+    firewalls:
+        main:
+            switch_user: { role: ROLE_ADMIN, parameter: _switch_user }
+```
