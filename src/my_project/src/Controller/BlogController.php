@@ -12,10 +12,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/admin/blog')]
+#[Route('')]
 class BlogController extends AbstractController
 {
-    #[Route('/', name: 'app_blog_index', methods: ['GET'])]
+    #[Route('/admin/blog', name: 'app_blog_index', methods: ['GET'])]
     public function index(BlogRepository $blogRepository): Response
     {
         return $this->render('blog/index.html.twig', [
@@ -23,7 +23,15 @@ class BlogController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_blog_new', methods: ['GET', 'POST'])]
+    #[Route('/user/blog', name: 'app_user_blog_index', methods: ['GET'])]
+    public function indexUser(BlogRepository $blogRepository): Response
+    {
+        return $this->render('blog/index.html.twig', [
+            'blogs' => $blogRepository->findAll(),
+        ]);
+    }
+
+    #[Route('/admin/blog/new', name: 'app_blog_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $blog = new Blog();
@@ -43,7 +51,7 @@ class BlogController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_blog_show', methods: ['GET'])]
+    #[Route('/admin/blog/{id}', name: 'app_blog_show', methods: ['GET'])]
     public function show(Blog $blog): Response
     {
         return $this->render('blog/show.html.twig', [
@@ -51,7 +59,7 @@ class BlogController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_blog_edit', methods: ['GET', 'POST'])]
+    #[Route('/admin/blog/{id}/edit', name: 'app_blog_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Blog $blog, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(BlogType::class, $blog);
@@ -69,7 +77,7 @@ class BlogController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_blog_delete', methods: ['POST'])]
+    #[Route('/admin/blog/{id}', name: 'app_blog_delete', methods: ['POST'])]
     public function delete(Request $request, Blog $blog, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$blog->getId(), $request->getPayload()->getString('_token'))) {
@@ -80,7 +88,7 @@ class BlogController extends AbstractController
         return $this->redirectToRoute('app_blog_index', [], Response::HTTP_SEE_OTHER);
     }
 
-    #[Route('/x/rest-api', name: 'REST_API_blog_get', methods: ['GET'])]
+    #[Route('/admin/blog/x/rest-api', name: 'REST_API_blog_get', methods: ['GET'])]
     public function REST_API_GET(BlogRepository $blogRepository)
     {
         $entity_array = $blogRepository->findAll();
@@ -92,7 +100,7 @@ class BlogController extends AbstractController
         return new JsonResponse(["data"=>$dict_array]);
     }
 
-    #[Route('/x/rest-api/pagination', name: 'REST_API_blog_get_pagination', methods: ['GET'])]
+    #[Route('/admin/blog/x/rest-api/pagination', name: 'REST_API_blog_get_pagination', methods: ['GET'])]
     public function REST_API_GET_pagination(BlogRepository $blogRepository)
     {
         $current_page = 1;
